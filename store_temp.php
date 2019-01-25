@@ -1,24 +1,34 @@
 <?php
-/*
-$temperature = $_POST["temperature"];
 
-echo $temperature;*/
 
-if (isset($_POST['temperature'])){
+
+
     
-    $temperature = $_POST["temperature"];
-    $filename_temperature = "data.json";
+    $data_json = file_get_contents("php://input");
+    $filename = "data.json";
     
-    $op = file_put_contents($filename_temperature, $temperature);
+    $data = json_decode($data_json);
+    if (! $data) {
+        
+        http_response_code(415);
+        exit();
+    } 
+    
+    elseif (! $data->temperature || ! $data->humidite) {
+        
+        http_response_code(400);
+        exit();
+    }
+
+
+
+    $op = file_put_contents($filename, $data_json);
     if (! $op) {
         
-        echo "store error";
+        http_response_code(500);
+        exit();
     }
     
-}
-    else {
-        
-        echo "data error";
-    }
+
+    
 ?>
-<!--{"temperature":"55","humidite":"10"}-->
